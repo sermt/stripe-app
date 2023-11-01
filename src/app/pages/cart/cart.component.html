@@ -1,5 +1,6 @@
 <mat-card class="max-w-7x1" *ngIf="cart.items.length; else noCart">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <caption>Shopping Cart Summary</caption>
     <ng-container matColumnDef="product"
       ><th mat-header-cell *matHeaderCellDef>
         <span>Product</span>
@@ -56,9 +57,9 @@
         </p>
       </td>
       <td mat-footer-cell *matFooterCellDef>
-        <span class="font-bold py-5 block">
-          {{ (total$ | async )| currency : "USD" }}</span
-        >
+        <ng-container *ngIf="total$ | async as total">
+          <p class="truncate max-w-xs">{{ total | currency : "USD" }}</p>
+        </ng-container>
       </td></ng-container
     >
     <ng-container matColumnDef="action"

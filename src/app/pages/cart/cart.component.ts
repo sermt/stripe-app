@@ -1,4 +1,9 @@
-import { AfterViewInit,AfterViewChecked, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from "@angular/core";
 import { Observable, Subject, tap } from "rxjs";
 import { Cart, CartItem } from "src/app/models/cart.model";
 
@@ -6,7 +11,7 @@ import { Cart, CartItem } from "src/app/models/cart.model";
   selector: "app-cart",
   templateUrl: "./cart.component.html",
 })
-export class CartComponent implements OnInit, AfterViewChecked {
+export class CartComponent implements OnInit, AfterViewInit {
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   private total = new Subject<number>();
@@ -35,12 +40,13 @@ export class CartComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.dataSource = this.cart.items;
-    this.total.next(this.getTotal(this.cart.items));
   }
-  ngAfterViewChecked(): void {
+  ngAfterViewInit(): void {
+    this.total.next(this.getTotal(this.cart.items));
+    this.changeDetectorRef.detectChanges();
   }
 
-  private getTotal(items:CartItem[]): number {
+  getTotal(items: CartItem[]): number {
     let total = 0;
     items.map((item) => {
       total += item.price * item.quantity;
