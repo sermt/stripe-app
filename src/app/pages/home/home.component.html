@@ -12,18 +12,7 @@
     <mat-grid-list gutterSize="16" [cols]="columns" [rowHeight]="rowHeight">
       <mat-grid-tile>
         <app-product-box
-          class="w-full"
-          [fullWidthMode]="columns === 1"
-        ></app-product-box>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <app-product-box
-          class="w-full"
-          [fullWidthMode]="columns === 1"
-        ></app-product-box>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <app-product-box
+          (addToCart)="onAddToCart($event)"
           class="w-full"
           [fullWidthMode]="columns === 1"
         ></app-product-box>

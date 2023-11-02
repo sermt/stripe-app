@@ -1,20 +1,13 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from "@angular/core";
-import { Observable, Subject, tap } from "rxjs";
+import { Component, OnInit } from "@angular/core";
+import { Observable, BehaviorSubject } from "rxjs";
 import { Cart, CartItem } from "src/app/models/cart.model";
 
 @Component({
   selector: "app-cart",
   templateUrl: "./cart.component.html",
 })
-export class CartComponent implements OnInit, AfterViewInit {
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
-
-  private total = new Subject<number>();
+export class CartComponent implements OnInit {
+  private total = new BehaviorSubject<number>(0);
   total$: Observable<number> = this.total.asObservable();
   cart: Cart = {
     items: [
@@ -40,15 +33,12 @@ export class CartComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.dataSource = this.cart.items;
-  }
-  ngAfterViewInit(): void {
     this.total.next(this.getTotal(this.cart.items));
-    this.changeDetectorRef.detectChanges();
   }
 
-  getTotal(items: CartItem[]): number {
+  private getTotal(items: CartItem[]): number {
     let total = 0;
-    items.map((item) => {
+    items.forEach((item) => {
       total += item.price * item.quantity;
     });
     return total;
