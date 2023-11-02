@@ -7,16 +7,11 @@ import { Product } from "src/app/models/product.model";
   styles: [],
 })
 export class ProductBoxComponent {
+  
   @Input() fullWidthMode = false;
+  @Input() product:Product|undefined;
   @Output() addToCart = new EventEmitter<Product>();
-  product: Product | undefined = {
-    id: 0,
-    title: "something",
-    category: "something",
-    description: "something",
-    image: "https://via.placeholder.com/150",
-    price: 10,
-  };
+  
 
   onAddToCart(): void {
     this.addToCart.emit(this.product);

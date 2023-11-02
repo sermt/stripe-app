@@ -1,24 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
+import { loadStripe } from "@stripe/stripe-js";
+import { Observable } from "rxjs";
 import { Cart, CartItem } from "src/app/models/cart.model";
+import { CartService } from "src/app/services/cart.service";
 
 @Component({
   selector: "app-cart",
   templateUrl: "./cart.component.html",
 })
 export class CartComponent implements OnInit {
-  private total = new BehaviorSubject<number>(0);
-  total$: Observable<number> = this.total.asObservable();
+  constructor(private cartService: CartService) {}
+  total$: Observable<number> = this.cartService.total$;
   cart: Cart = {
-    items: [
-      {
-        productImage: "https://via.placeholder.com/150",
-        name: "Fancy shoe",
-        price: 100,
-        quantity: 1,
-        id: 1,
-      },
-    ],
+    items: [],
   };
 
   dataSource!: CartItem[];
@@ -32,15 +26,34 @@ export class CartComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.cartService.cart.subscribe((_cart) => {
+      this.cart = _cart;
+    });
     this.dataSource = this.cart.items;
-    this.total.next(this.getTotal(this.cart.items));
   }
 
-  private getTotal(items: CartItem[]): number {
-    let total = 0;
-    items.forEach((item) => {
-      total += item.price * item.quantity;
+  onClearCart(): void {
+    this.cartService.clearCart();
+  }
+
+  onRemoveFromCart(cartItem: CartItem): void {
+    this.cartService.removeFromCart(cartItem);
+  }
+
+  onAddQuantity(cartItem: CartItem): void {
+    this.cartService.addToCart(cartItem);
+  }
+
+  onRemoveQuantity(cartItem: CartItem): void {
+    this.cartService.removeQuantity(cartItem);
+  }
+
+  onCheckout(): void {
+    this.cartService.checkout().subscribe(() => {
+      async(res:any)=>{
+        let stripe = await loadStripe('token here');
+        stripe?.redirectToCheckout({sessionId:res.id})
+      }
     });
-    return total;
   }
 }

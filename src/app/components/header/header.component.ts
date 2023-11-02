@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { Observable } from "rxjs";
 import { Cart, CartItem } from "src/app/models/cart.model";
 import { CartService } from "src/app/services/cart.service";
 
@@ -8,7 +9,8 @@ import { CartService } from "src/app/services/cart.service";
   styles: [],
 })
 export class HeaderComponent {
-  constructor(private cartService:CartService) {}
+  constructor(private cartService: CartService) {}
+  total$: Observable<number> = this.cartService.total$;
   private _cart: Cart = {
     items: [],
   };
@@ -25,8 +27,10 @@ export class HeaderComponent {
     );
   }
 
-
+  onClearCart(): void {
+    return this.cartService.clearCart();
+  }
   getTotal(items: CartItem[]): number {
-   return this.cartService.getTotal(items);
+    return this.cartService.getTotal(items);
   }
 }
